@@ -1,0 +1,13 @@
+.gradle/
+build/
+out/
+run/
+*.iml
+.idea/
+.vscode/
+.DS_Store
+launcher/node_modules/
+launcher/dist/
+
+# Locally installed AI design skills, not part of Quasar
+.claude/

@@ -1,0 +1,28 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('quasar', {
+  platform: process.platform,
+  getInfo: () => ipcRenderer.invoke('info:get'),
+  getSettings: () => ipcRenderer.invoke('settings:get'),
+  setSettings: (patch) => ipcRenderer.invoke('settings:set', patch),
+  getModules: () => ipcRenderer.invoke('modules:get'),
+  setModules: (states) => ipcRenderer.invoke('modules:set', states),
+  play: () => ipcRenderer.invoke('game:play'),
+  buildMod: () => ipcRenderer.invoke('mod:build'),
+  openGameFolder: () => ipcRenderer.invoke('folder:open'),
+  pickFolder: () => ipcRenderer.invoke('dialog:folder'),
+  pickJar: () => ipcRenderer.invoke('dialog:jar'),
+  getCategories: (source) => ipcRenderer.invoke('mods:categories', source),
+  searchMods: (opts) => ipcRenderer.invoke('mods:search', opts),
+  getInstalled: () => ipcRenderer.invoke('mods:installed'),
+  installMod: (source, id) => ipcRenderer.invoke('mods:install', source, id),
+  removeMod: (file) => ipcRenderer.invoke('mods:remove', file),
+  openLink: (url) => ipcRenderer.invoke('link:open', url),
+  signIn: () => ipcRenderer.invoke('account:signIn'),
+  signOut: () => ipcRenderer.invoke('account:signOut'),
+  openReadme: () => ipcRenderer.invoke('readme:open'),
+  onGameState: (cb) => ipcRenderer.on('game-state', (_e, s) => cb(s)),
+  window: (action) => ipcRenderer.send('window', action),
+  onLog: (cb) => ipcRenderer.on('log', (_e, line) => cb(line)),
+  onProgress: (cb) => ipcRenderer.on('progress', (_e, value, status) => cb(value, status)),
+});

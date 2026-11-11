@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data: https://cdn.modrinth.com https://media.forgecdn.net" />
+  <title>Quasar Client</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  <div class="app">
+    <header class="titlebar">
+      <div class="wordmark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+          <ellipse cx="12" cy="12" rx="10.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(-24 12 12)" />
+        </svg>
+        Quasar
+      </div>
+      <div class="win-controls" id="win-controls">
+        <button data-win="minimize" aria-label="Minimize"><svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor"><path d="M2 6h8" /></svg></button>
+        <button data-win="maximize" aria-label="Maximize"><svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor"><rect x="2.5" y="2.5" width="7" height="7" /></svg></button>
+        <button data-win="close" class="close" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor"><path d="m2.5 2.5 7 7m0-7-7 7" /></svg></button>
+      </div>
+    </header>
+
+    <main class="main" id="content" tabindex="-1">
+
+      <!-- PLAY -->
+      <section class="page" id="page-play" aria-labelledby="play-title">
+        <div class="page-inner">
+          <div class="hero">
+            <div>
+              <h1 id="play-title">Quasar</h1>
+              <p class="hero-sub">Minecraft <span class="mc-version">1.21.1</span> with Fabric</p>
+              <button class="play-btn" id="play-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M7 4.5v15l12-7.5z" /></svg>
+                <span id="play-label">Play</span>
+              </button>
+              <div class="play-status" id="play-status">
+                <div class="play-status-text" id="progress-status" role="status" aria-live="polite"></div>
+                <div class="progress" id="progress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+                  <div class="progress-fill" id="progress-fill"></div>
+                </div>
+              </div>
+            </div>
+            <dl class="facts" aria-label="Your setup">
+              <div><dt>Minecraft</dt><dd class="mc-version">1.21.1</dd></div>
+              <div><dt>Fabric Loader</dt><dd class="loader-version">0.16.14</dd></div>
+              <div><dt>Memory</dt><dd id="fact-ram">4 GB</dd></div>
+              <div><dt>Added mods</dt><dd id="fact-mods">0</dd></div>
+              <div><dt>Features on</dt><dd><span id="stat-active">0</span> of <span id="stat-total">0</span></dd></div>
+              <div><dt>Quasar mod</dt><dd id="jar-state" class="state">Checking</dd></div>
+              <div><dt>Launches with</dt><dd id="fact-launch">Minecraft Launcher</dd></div>
+            </dl>
+          </div>
+
+          <div class="section-head">
+            <h2 class="section-title">Your mods</h2>
+            <button class="btn" data-goto="browse">Browse mods</button>
+          </div>
+          <div id="home-mods"></div>
+
+          <div class="section-head">
+            <h2 class="section-title">Files</h2>
+          </div>
+          <div class="rows">
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Quasar mod file</div>
+                <div class="row-sub" id="jar-detail">Checking…</div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" id="home-build" hidden>Build mod</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Game folder</div>
+                <div class="row-sub" id="home-game-dir"></div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" id="home-folder">Open folder</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="keys">In game, press <kbd>Right Shift</kbd> to open the feature menu and hold <kbd>C</kbd> to zoom.</p>
+        </div>
+      </section>
+
+      <!-- BROWSE -->
+      <section class="page" id="page-browse" aria-labelledby="browse-title" hidden>
+        <div class="page-inner">
+          <div class="page-head page-head-row">
+            <div>
+              <h1 id="browse-title">Browse mods</h1>
+              <p>Mods for Minecraft <span class="mc-version">1.21.1</span> from Modrinth and CurseForge. Quasar runs on Fabric, so only Fabric mods can be installed.</p>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Browse views">
+              <button role="tab" id="tab-discover" aria-controls="view-discover" aria-selected="true">Discover</button>
+              <button role="tab" id="tab-installed" aria-controls="view-installed" aria-selected="false" tabindex="-1">Installed <span class="count" id="installed-count">0</span></button>
+            </div>
+          </div>
+
+          <div id="view-discover" role="tabpanel" aria-labelledby="tab-discover">
+            <div class="filters">
+              <div class="filter-line">
+                <label class="search">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+                  <input id="mod-query" type="search" placeholder="Search mods" aria-label="Search mods" />
+                </label>
+                <div class="segmented" role="group" aria-label="Source">
+                  <button data-source="modrinth" aria-pressed="true">Modrinth</button>
+                  <button data-source="curseforge" aria-pressed="false">CurseForge</button>
+                </div>
+              </div>
+              <div class="filter-line">
+                <label class="field">Loader
+                  <select class="select" id="filter-loader">
+                    <option value="fabric">Fabric</option>
+                    <option value="quilt">Quilt</option>
+                    <option value="forge">Forge</option>
+                    <option value="neoforge">NeoForge</option>
+                    <option value="any">Any loader</option>
+                  </select>
+                </label>
+                <label class="field">Runs on
+                  <select class="select" id="filter-side">
+                    <option value="any">Client or server</option>
+                    <option value="client">Client</option>
+                    <option value="server">Server</option>
+                  </select>
+                </label>
+                <label class="field">Sort by
+                  <select class="select" id="filter-sort">
+                    <option value="relevance">Best match</option>
+                    <option value="downloads">Most downloaded</option>
+                    <option value="follows">Most followed</option>
+                    <option value="updated">Recently updated</option>
+                    <option value="newest">Newest</option>
+                  </select>
+                </label>
+              </div>
+              <div class="toggles" id="filter-categories" role="group" aria-label="Category"></div>
+            </div>
+
+            <div class="results-meta">
+              <span id="results-count" role="status" aria-live="polite"></span>
+            </div>
+            <div id="results"></div>
+            <div class="load-more"><button class="btn" id="load-more" hidden>Show more</button></div>
+          </div>
+
+          <div id="view-installed" role="tabpanel" aria-labelledby="tab-installed" hidden>
+            <div id="installed-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="page" id="page-features" aria-labelledby="features-title" hidden>
+        <div class="page-inner">
+          <div class="page-head page-head-row">
+            <div>
+              <h1 id="features-title">Features</h1>
+              <p>Quasar's built-in features. Changes save right away and apply the next time you play. You can also switch them in game with <kbd>Right Shift</kbd>.</p>
+            </div>
+            <div class="page-head-actions">
+              <label class="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+                <input id="mod-search" type="search" placeholder="Search" aria-label="Search features" />
+              </label>
+              <button class="btn" id="mods-reset">Reset to defaults</button>
+            </div>
+          </div>
+          <div id="mod-groups"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings" aria-labelledby="settings-title" hidden>
+        <div class="page-inner">
+          <div class="page-head">
+            <h1 id="settings-title">Settings</h1>
+            <p>Changes save automatically.</p>
+          </div>
+
+          <h2 class="section-title">Sign-in</h2>
+          <div class="rows">
+            <div class="row row-stack" id="account-row">
+              <div class="row-text">
+                <div class="row-title">Microsoft account</div>
+                <div class="row-sub">Sign in once to start Minecraft straight from Quasar. Until you do, Play opens the Minecraft Launcher.</div>
+                <div class="state" id="account-state" role="status" aria-live="polite">Not signed in.</div>
+              </div>
+              <div class="row-actions">
+                <button class="btn accent" id="sign-in">Sign in with Microsoft</button>
+                <button class="btn" id="sign-out" hidden>Sign out</button>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Performance</h2>
+          <div class="rows">
+            <div class="row">
+              <div class="row-text">
+                <label class="row-title" for="ram">Memory</label>
+                <div class="row-sub" id="ram-help">How much RAM Minecraft can use. 4 GB suits most players; add more for big mod lists.</div>
+              </div>
+              <div class="row-actions ram">
+                <input type="range" id="ram" min="1" max="16" step="1" aria-describedby="ram-help" />
+                <output id="ram-value" for="ram">4 GB</output>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">CurseForge</h2>
+          <div class="rows">
+            <div class="row row-stack">
+              <div class="row-text">
+                <label class="row-title" for="cf-key">API key</label>
+                <div class="row-sub" id="cf-help">CurseForge needs a free personal key before the launcher can search it. Modrinth works without one. The key is stored encrypted with your computer's keychain.</div>
+                <div class="state" id="cf-state" role="status" aria-live="polite"></div>
+              </div>
+              <div class="row-actions key-field">
+                <input class="input" id="cf-key" type="password" autocomplete="off" spellcheck="false" aria-describedby="cf-help cf-state" placeholder="Paste your key" />
+                <button class="btn" id="cf-save">Save key</button>
+                <button class="btn" id="cf-remove" hidden>Remove key</button>
+                <button class="btn" id="cf-get">Get a key</button>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Game files</h2>
+          <div class="rows">
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Minecraft folder</div>
+                <div class="row-sub" id="mc-dir"></div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" id="pick-mc-dir">Change</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Quasar game folder</div>
+                <div class="row-sub" id="game-dir"></div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" id="open-game-dir">Open folder</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Quasar mod file</div>
+                <div class="row-sub" id="mod-jar"></div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" id="auto-jar">Find automatically</button>
+                <button class="btn" id="pick-jar">Choose file</button>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Launcher</h2>
+          <div class="rows">
+            <label class="row">
+              <span class="row-text">
+                <span class="row-title">Close the launcher when Minecraft opens</span>
+              </span>
+              <span class="row-actions"><input type="checkbox" class="switch" role="switch" id="close-on-launch" /></span>
+            </label>
+            <div class="row">
+              <div class="row-text">
+                <div class="row-title">Version</div>
+                <div class="row-sub">Launcher <span id="app-version">1.0.0</span>, Fabric Loader <span class="loader-version">0.16.14</span>, Minecraft <span class="mc-version">1.21.1</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONSOLE -->
+      <section class="page" id="page-console" aria-labelledby="console-title" hidden>
+        <div class="page-inner">
+          <div class="page-head page-head-row">
+            <div>
+              <h1 id="console-title">Console</h1>
+              <p>Every step the launcher takes. Copy this if you need help with an error.</p>
+            </div>
+            <div class="page-head-actions">
+              <button class="btn" id="copy-log">Copy</button>
+              <button class="btn" id="clear-log">Clear</button>
+            </div>
+          </div>
+          <pre class="console" id="console" tabindex="0" aria-label="Launcher log"><span class="placeholder">Nothing here yet. Press Play to start.</span></pre>
+        </div>
+      </section>
+    </main>
+
+    <nav class="dock" aria-label="Main">
+      <button class="dock-item" data-page="play" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z" /></svg>
+        Play
+      </button>
+      <button class="dock-item" data-page="browse">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4" /><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" /></svg>
+        Browse
+      </button>
+      <button class="dock-item" data-page="features">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1" /><rect x="13" y="4" width="7" height="7" rx="1" /><rect x="4" y="13" width="7" height="7" rx="1" /><rect x="13" y="13" width="7" height="7" rx="1" /></svg>
+        Features
+      </button>
+      <button class="dock-item" data-page="settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>
+        Settings
+      </button>
+      <button class="dock-item" data-page="console">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m7 10 3 2.5L7 15M12 15h5" /></svg>
+        Console
+        <span class="dock-alert" id="console-alert" hidden><span class="visually-hidden">, has errors</span></span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "quasar",
+  "version": "${version}",
+  "name": "Quasar Client",
+  "description": "A lightweight Minecraft client: HUD, keystrokes, zoom, fullbright, toggle sprint and a click GUI.",
+  "authors": ["Owen Chen"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.quasar.QuasarClient"]
+  },
+  "mixins": ["quasar.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

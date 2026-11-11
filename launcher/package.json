@@ -1,0 +1,38 @@
+{
+  "name": "quasar-launcher",
+  "productName": "Quasar Client",
+  "version": "1.0.0",
+  "description": "Desktop launcher for Quasar Client (Minecraft 1.21.1, Fabric)",
+  "main": "main.js",
+  "author": "Owen Chen",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node node_modules/electron/install.js",
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^37.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "dev.quasar.launcher",
+    "productName": "Quasar Client",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "renderer/**/*"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.games"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
